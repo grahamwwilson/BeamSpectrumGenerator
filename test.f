@@ -5,15 +5,18 @@
       double precision a1(0:7)
       double precision u,girceb
       double precision x1m,x2m
+      logical lhbook
+      parameter (lhbook=.true.)
       integer iev
       include 'hinit.f'
       data a1 /
      $   0.49808e+00,  0.54613e+00,  0.12287e+02, -0.62756e+00, 
      $   0.42817e+00, -0.69120e+00,  0.17067e+02,  0.51143e+00 /       
       
-      call hlimit(nwpawc)
-      
-      call bookh
+      if(lhbook)then
+         call hlimit(nwpawc)
+         call bookh
+      endif
       
       x1m=0d0
       x2m=0d0
@@ -22,7 +25,7 @@
 * Currently only need the three parameters a1(0), a1(2), a1(3) 
 * in this minimalist implementation   
       
-      do iev=1,1000000
+      do iev=1,10000000
       
          call rng(u)
          if (u .le. a1(0)) then 
@@ -40,14 +43,18 @@
          
 *         print *,iev,' x1 = ',x1,' x2 = ',x2 
 
-         call hfill(101,real(x1),0.0,1.0)
-         call hfill(102,real(x2),0.0,1.0)
-         call hfill(103,real(sqrt(x1*x2)),0.0,1.0)
-         call hfill(104,real(abs(x1-x2)),0.0,1.0)
+         if(lhbook)then
+            call hfill(101,real(x1),0.0,1.0)
+            call hfill(102,real(x2),0.0,1.0)
+            call hfill(103,real(sqrt(x1*x2)),0.0,1.0)
+            call hfill(104,real(abs(x1-x2)),0.0,1.0)
+         endif
  
       enddo
       
-      call hrput(0,'test.hbook','NT')
+      if(lhbook)then
+         call hrput(0,'test.hbook','NT')
+      endif
       
       end
       subroutine bookh

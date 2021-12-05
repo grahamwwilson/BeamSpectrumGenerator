@@ -1,0 +1,8 @@
+On laptop.
+
+10M events.  RANLUX LUX=3
+With histograms   : 5.691s
+With no histograms: 4.599s
+
+10M events.  RANLUX LUX=2
+With histograms   : 3.968s
