@@ -1,8 +1,24 @@
 On laptop.
 
-10M events.  RANLUX LUX=3
+10M events.  RANLUX LUX=3, LEN=100
 With histograms   : 5.691s
 With no histograms: 4.599s
 
-10M events.  RANLUX LUX=2
+10M events.  RANLUX LUX=2, LEN=100
 With histograms   : 3.968s
+
+10M events.  RM48 (RANMAR), LEN=100
+With histograms   : 3.047s
+
+10M events.  RM48 (RANMAR), LEN=1000
+With histograms   : 3.015s
+
+10M events.  RM48 (RANMAR), LEN=10000
+With histograms   : 2.995s
+
+10M events.  RM48 (RANMAR), LEN=100000
+With histograms   : 3.080s
+
+testb.
+10M events using RM48 for rng and RNORMX(RANLUX) for Gaussian.
+=> time = 7.050s.

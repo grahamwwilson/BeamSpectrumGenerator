@@ -1,9 +1,9 @@
-      subroutine rngl (r)
-* RANLUX based implementation      
+      subroutine rngm (r)
+* RM48 based implementation (CERNLIB V116)
       implicit none
       integer len 
-      parameter (len=1000)
-      real rvec(len)
+      parameter (len=10000)
+      double precision rvec(len)
       double precision r
       integer ivalue
       data ivalue/-1/
@@ -14,16 +14,16 @@
       
 * RNG initialization
       if(ivalue.eq.-1)then
-         call rluxgo(3,0,0,0)
+         call rm48in(0,0,0)
       endif
       
 * RNG array filling/replenishment and array index reset      
       if(ivalue.eq.-1.or.ivalue.gt.len)then
-         call ranlux(rvec,len)
+         call rm48(rvec,len)
          ivalue = 1
       endif
       
-      r = dble(rvec(ivalue))     
+      r = rvec(ivalue)     
 *      print *,'r = ',r
       
 * Set to next random number in array

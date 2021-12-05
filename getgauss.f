@@ -1,16 +1,15 @@
-      subroutine rngl (r)
-* RANLUX based implementation      
+      subroutine getgauss(z1,z2)
+* RNORMX based implementation using RANLUX
       implicit none
       integer len 
-      parameter (len=1000)
+      parameter (len=2000)
       real rvec(len)
-      double precision r
+      double precision z1, z2
       integer ivalue
+      external ranlux
       data ivalue/-1/
       save ivalue
       save rvec
-      
-*      print *,'ivalue = ',ivalue
       
 * RNG initialization
       if(ivalue.eq.-1)then
@@ -19,14 +18,14 @@
       
 * RNG array filling/replenishment and array index reset      
       if(ivalue.eq.-1.or.ivalue.gt.len)then
-         call ranlux(rvec,len)
+         call rnormx(rvec,len,ranlux)
          ivalue = 1
       endif
       
-      r = dble(rvec(ivalue))     
-*      print *,'r = ',r
+      z1 = dble(rvec(ivalue))
+      z2 = dble(rvec(ivalue+1))
       
-* Set to next random number in array
-      ivalue = ivalue + 1
+* Set to next Gaussian random number pair in array
+      ivalue = ivalue + 2
       
       end
