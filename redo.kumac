@@ -1,0 +1,19 @@
+macro redo
+*** Begin of history file: Sat Dec  4 18:22:01 2021
+hi/fil 21 test.hbook
+cd //lun21
+osetup c
+set ygti 1.0
+title_g 'CIRCE functions'
+opt htit
+idopt 0 logy
+set stat 111111
+opt stat
+set csiz 0.40
+zone 2 2
+h/pl 101
+h/pl 102
+h/pl 103
+h/pl 104
+return
+*** End   of history file: Sat Dec  4 18:23:33 2021
