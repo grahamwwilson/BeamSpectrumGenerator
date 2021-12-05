@@ -10,4 +10,4 @@ that describes the scaled beam energy after potential beamstrahlung.
 testb.f produces (x1,x2) after convolving 
 Gaussian beam-energy-spread (BES) with beamstrahlung.
 Again uses 3-parameter CIRCE1 F77 implementation of the beta distribution 
-generator for sampling from the CIRCE function for beamstrahlung
+generator for sampling from the CIRCE function for the beamstrahlung part.
