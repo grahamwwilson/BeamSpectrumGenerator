@@ -90,6 +90,7 @@
             call hfill(103,real(sqrt(y1*y2)),0.0,1.0)
             call hfill(104,real(abs(y1-y2)),0.0,1.0)
             call hfill(105,rtype,0.0,1.0)
+            call hfill(106,real(y1-y2),0.0,1.0)            
          endif
  
       enddo
@@ -107,6 +108,7 @@
       call hbook1(103,'sqrt(x1*x2)',1101,-0.0005,1.1005,0.0)      
       call hbook1(104,'|x1-x2|',1100,0.000,1.100,0.0)
       call hbook1(105,'Type ',4,0.5,4.5,0.0)
+      call hbook1(106,'x1-x2',2200,-1.100,1.100,0.0)      
 
       end
       
