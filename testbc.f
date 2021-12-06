@@ -2,6 +2,7 @@
 * V1. test
 * V2. testb.  Add BES.
 * V3. testbc. Separate into peak, arm, and body with specified probabilities.
+* V4. testbc. But add separate slope parameters for arm and body.
       implicit none
       double precision x1,x2
       external rng
@@ -22,8 +23,8 @@
 * peak, body
       data pnorm/0.26307d0,0.28151d0/
       data a1 /
-     $   0.49808e+00,  0.54613e+00,  0.12287e+02, -0.62756e+00, 
-     $   0.42817e+00, -0.69120e+00,  0.17067e+02,  0.51143e+00 /       
+     $   0.49808d+00,  0.54613d+00,  0.12287d+02, -0.62756d+00, 
+     $   0.42817d+00, -0.69120d+00,  0.17067d+02,  0.51143d+00 /       
       
       print *,'Beam energy spread (BES) parameters'
       print *,'s1 (electron) = ',s1
@@ -34,6 +35,9 @@
       print *,'p(body) = ',pnorm(2)
       print *,'p(arms) = ',1.0d0-pnorm(1)-pnorm(2),
      +                     0.5d0*(1.0d0-pnorm(1)-pnorm(2))
+     
+      print *,'Slope parameters'
+      print *,a1(2),a1(3)
       
       if(lhbook)then
          call hlimit(nwpawc)
