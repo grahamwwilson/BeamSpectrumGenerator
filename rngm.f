@@ -5,6 +5,7 @@
       parameter (len=10000)
       double precision rvec(len)
       double precision r
+      include 'seeds.f'      
       integer ivalue
       data ivalue/-1/
       save ivalue
@@ -14,7 +15,7 @@
       
 * RNG initialization
       if(ivalue.eq.-1)then
-         call rm48in(0,0,0)
+         call rm48in(seedm,0,0)
       endif
       
 * RNG array filling/replenishment and array index reset      

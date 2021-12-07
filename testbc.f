@@ -3,9 +3,18 @@
 * V2. testb.  Add BES.
 * V3. testbc. Separate into peak, arm, and body with specified probabilities.
 * V4. testbc. Add separate slope parameters for arm and body.
+* V5. testbc  Add output file with header portion.
       implicit none
       double precision x1,x2
       external rng
+      integer nevs
+      parameter (nevs=10000)
+      integer nheader
+      parameter (nheader=14)
+      integer version
+      parameter (version=4)
+      integer nparameters
+      parameter (nparameters=8)
       integer rtype
       double precision a1(0:7)
       double precision u,girceb
@@ -18,6 +27,7 @@
       parameter (s1=0.190d-2, s2=0.152d-2)
       logical lhbook
       parameter (lhbook=.true.)
+      include 'seeds.f'
       integer iev
       include 'hinit.f'
 * peak, body
@@ -53,7 +63,22 @@
 * Use the two slope parameters a1(2), a1(3) for the arms 
 * and the two slope parameters a1(6), a1(7) for the body
       
-      do iev=1,10000000
+      write(41,*)nheader
+      write(41,*)version
+      write(41,*)nparameters
+      write(41,*)nevs
+      write(41,*)seedm
+      write(41,*)seedl
+      write(41,*)s1
+      write(41,*)s2
+      write(41,*)pnorm(1)
+      write(41,*)pnorm(2)
+      write(41,*)a1(2)
+      write(41,*)a1(3)
+      write(41,*)a1(6)
+      write(41,*)a1(7)
+      
+      do iev=1,nevs
       
 * Get two normally distributed (standardized random numbers)
          call getgauss(rg1,rg2)
@@ -88,6 +113,9 @@
 * Scaled energy after BES and beamstrahlung
          y1 = z1*x1
          y2 = z2*x2
+         
+* Save information for each event to file
+         write(41,*)iev,rtype,y1,y2,x1,x2,z1,z2
 
          if(lhbook)then
             call hfill(101,real(y1),0.0,1.0)

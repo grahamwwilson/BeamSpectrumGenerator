@@ -6,6 +6,7 @@
       real rvec(len)
       double precision z1, z2
       integer ivalue
+      include 'seeds.f'
       external ranlux
       data ivalue/-1/
       save ivalue
@@ -13,7 +14,7 @@
       
 * RNG initialization
       if(ivalue.eq.-1)then
-         call rluxgo(3,0,0,0)
+         call rluxgo(3,seedl,0,0)
       endif
       
 * RNG array filling/replenishment and array index reset      
