@@ -2,7 +2,7 @@
 * V1. test
 * V2. testb.  Add BES.
 * V3. testbc. Separate into peak, arm, and body with specified probabilities.
-* V4. testbc. But add separate slope parameters for arm and body.
+* V4. testbc. Add separate slope parameters for arm and body.
       implicit none
       double precision x1,x2
       external rng
@@ -23,8 +23,8 @@
 * peak, body
       data pnorm/0.26307d0,0.28151d0/
       data a1 /
-     $   0.49808d+00,  0.54613d+00,  0.12287d+02, -0.62756d+00, 
-     $   0.42817d+00, -0.69120d+00,  0.17067d+02,  0.51143d+00 /       
+     $   0.49808d+00,  0.54613d+00,  0.17161d+02, -0.65863d+00, 
+     $   0.42817d+00, -0.69120d+00,  0.13707d+02, -0.63926d+00 /       
       
       print *,'Beam energy spread (BES) parameters'
       print *,'s1 (electron) = ',s1
@@ -37,7 +37,8 @@
      +                     0.5d0*(1.0d0-pnorm(1)-pnorm(2))
      
       print *,'Slope parameters'
-      print *,a1(2),a1(3)
+      print *,'Arms: ',a1(2),a1(3)
+      print *,'Body: ',a1(6),a1(7)
       
       if(lhbook)then
          call hlimit(nwpawc)
@@ -49,8 +50,8 @@
       
 * Generate two random numbers according to the CIRCE functions 
 * for scaled beam energy after potential beamstrahlung.
-* Currently only need the three parameters a1(0), a1(2), a1(3) 
-* in this minimalist implementation   
+* Use the two slope parameters a1(2), a1(3) for the arms 
+* and the two slope parameters a1(6), a1(7) for the body
       
       do iev=1,10000000
       
@@ -69,8 +70,8 @@
             rtype = 1.0                                            
          elseif (u .le. pnorm(1)+pnorm(2))then                                                        
 * body         
-            x1 = 1d0 - girceb (0d0, 1d0-x1m, a1(3)+1d0, a1(2)+1d0, rng)
-            x2 = 1d0 - girceb (0d0, 1d0-x1m, a1(3)+1d0, a1(2)+1d0, rng)
+            x1 = 1d0 - girceb (0d0, 1d0-x1m, a1(7)+1d0, a1(6)+1d0, rng)
+            x2 = 1d0 - girceb (0d0, 1d0-x1m, a1(7)+1d0, a1(6)+1d0, rng)
             rtype = 2.0
          elseif (u. le. 0.5d0*(1d0+pnorm(1)+pnorm(2)))then
 * arm1      
