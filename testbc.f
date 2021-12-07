@@ -6,7 +6,7 @@
       implicit none
       double precision x1,x2
       external rng
-      real rtype
+      integer rtype
       double precision a1(0:7)
       double precision u,girceb
       double precision x1m,x2m
@@ -67,22 +67,22 @@
 * peak
             x1 = 1d0
             x2 = 1d0
-            rtype = 1.0                                            
+            rtype = 1                                            
          elseif (u .le. pnorm(1)+pnorm(2))then                                                        
 * body         
             x1 = 1d0 - girceb (0d0, 1d0-x1m, a1(7)+1d0, a1(6)+1d0, rng)
             x2 = 1d0 - girceb (0d0, 1d0-x1m, a1(7)+1d0, a1(6)+1d0, rng)
-            rtype = 2.0
+            rtype = 2
          elseif (u. le. 0.5d0*(1d0+pnorm(1)+pnorm(2)))then
 * arm1      
             x1 = 1d0 - girceb (0d0, 1d0-x1m, a1(3)+1d0, a1(2)+1d0, rng)            
             x2 = 1d0
-            rtype = 3.0
+            rtype = 3
          else
 * arm2
             x1 = 1d0
             x2 = 1d0 - girceb (0d0, 1d0-x2m, a1(3)+1d0, a1(2)+1d0, rng)            
-            rtype = 4.0
+            rtype = 4
          endif
      
 * Scaled energy after BES and beamstrahlung
@@ -94,7 +94,7 @@
             call hfill(102,real(y2),0.0,1.0)
             call hfill(103,real(sqrt(y1*y2)),0.0,1.0)
             call hfill(104,real(abs(y1-y2)),0.0,1.0)
-            call hfill(105,rtype,0.0,1.0)
+            call hfill(105,real(rtype),0.0,1.0)
             call hfill(106,real(y1-y2),0.0,1.0)            
          endif
  
