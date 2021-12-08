@@ -16,6 +16,7 @@
       integer nparameters
       parameter (nparameters=8)
       integer rtype
+      integer findbin
       double precision a1(0:7)
       double precision u,girceb
       double precision x1m,x2m
@@ -90,24 +91,24 @@
          call rng(u)
          if (u .le. pnorm(1)) then 
 * peak
+            rtype = 1
             x1 = 1d0
-            x2 = 1d0
-            rtype = 1                                            
-         elseif (u .le. pnorm(1)+pnorm(2))then                                                        
+            x2 = 1d0                                            
+         elseif(u .le.pnorm(1)+pnorm(2))then                                                       
 * body         
+            rtype = 2
             x1 = 1d0 - girceb (0d0, 1d0-x1m, a1(7)+1d0, a1(6)+1d0, rng)
             x2 = 1d0 - girceb (0d0, 1d0-x1m, a1(7)+1d0, a1(6)+1d0, rng)
-            rtype = 2
          elseif (u. le. 0.5d0*(1d0+pnorm(1)+pnorm(2)))then
 * arm1      
-            x1 = 1d0 - girceb (0d0, 1d0-x1m, a1(3)+1d0, a1(2)+1d0, rng)            
-            x2 = 1d0
             rtype = 3
+            x1 = 1d0 - girceb (0d0, 1d0-x1m, a1(3)+1d0, a1(2)+1d0, rng)           
+            x2 = 1d0
          else
 * arm2
-            x1 = 1d0
-            x2 = 1d0 - girceb (0d0, 1d0-x2m, a1(3)+1d0, a1(2)+1d0, rng)            
             rtype = 4
+            x1 = 1d0
+            x2 = 1d0 - girceb (0d0, 1d0-x2m, a1(3)+1d0, a1(2)+1d0, rng) 
          endif
      
 * Scaled energy after BES and beamstrahlung
@@ -123,16 +124,19 @@
             call hfill(103,real(sqrt(y1*y2)),0.0,1.0)
             call hfill(104,real(abs(y1-y2)),0.0,1.0)
             call hfill(105,real(rtype),0.0,1.0)
-            call hfill(106,real(y1-y2),0.0,1.0)            
+            call hfill(106,real(y1-y2),0.0,1.0)
+            call hfill(107,real(findbin(y1)),0.0,1.0)
          endif
  
       enddo
       
       if(lhbook)then
          call hrput(0,'testbc.hbook','NT')
+         call hprint(107)
       endif
       
       end
+      
       subroutine bookh
       implicit none
       call hidopt(0,'stat')
@@ -141,10 +145,12 @@
       call hbook1(103,'sqrt(x1*x2)',1101,-0.0005,1.1005,0.0)      
       call hbook1(104,'|x1-x2|',1100,0.000,1.100,0.0)
       call hbook1(105,'Type ',4,0.5,4.5,0.0)
-      call hbook1(106,'x1-x2',2200,-1.100,1.100,0.0)      
+      call hbook1(106,'x1-x2',2200,-1.100,1.100,0.0)
+      call hbook1(107,'Equiprobability x1 bin',100,0.5,100.5,0.0)
 
       end
       
       include 'rng.f'
       include 'girceb.f'
       include 'getgauss.f'
+      include 'findbin.f'

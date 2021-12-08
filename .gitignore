@@ -1,12 +1,11 @@
 test
-test.hbook
 testb
-testb.hbook
 testbc
-testbc.hbook
+makebins
 last.kumac
 last.kumacold
 .mynotes
-fort.41
-*.dat
+fort.*
+test*.dat
 seeds.f
+*.hbook
