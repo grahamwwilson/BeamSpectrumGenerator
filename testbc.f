@@ -17,6 +17,8 @@
       parameter (nparameters=10)
       integer rtype
       integer findbin
+      double precision betabody(2)
+      double precision betaarms(2)
       double precision a1(0:7)
       double precision u,girceb
       double precision y1m,y2m
@@ -28,6 +30,8 @@
       double precision s1,s2
       double precision pnorm(2)
       parameter (s1=0.190d-2, s2=0.152d-2)
+      integer ia,ib
+      parameter (ia=1, ib=2)
       logical lhbook
       parameter (lhbook=.true.)
       include 'seeds.f'
@@ -35,10 +39,13 @@
       include 'hinit.f'
 * peak, body
       data pnorm/0.26307d0,0.28151d0/
-      data a1 /
-     $   0.49808d+00,  0.54613d+00,  0.17161d+02, -0.65863d+00, 
-     $   0.42817d+00, -0.69120d+00,  0.13707d+02, -0.63926d+00 /       
-      
+* Note CIRCE Beta distribution is  a1*x^a2*(1-x)^a3     
+*      data a1 /
+*     $   0.49808d+00,  0.54613d+00,  0.17161d+02, -0.65863d+00, 
+*     $   0.42817d+00, -0.69120d+00,  0.13707d+02, -0.63926d+00 /       
+      data betabody/0.36074d0,14.707d0/
+      data betaarms/0.34164d0,18.161d0/
+
       print *,'Beam energy spread (BES) parameters'
       print *,'s1 (electron) = ',s1
       print *,'s2 (positron) = ',s2
@@ -50,9 +57,12 @@
      +                     0.5d0*(1.0d0-pnorm(1)-pnorm(2))
      
       print *,'Slope parameters'
-      print *,'Arms: ',a1(2),a1(3)
-      print *,'Body: ',a1(6),a1(7)
+*      print *,'Arms: ',a1(2),a1(3)
+*      print *,'Body: ',a1(6),a1(7)
       
+      print *,'Body (alpha,beta): ',betabody(ia),betabody(ib)      
+      print *,'Arms (alpha,beta): ',betaarms(ia),betaarms(ib)
+
       if(lhbook)then
          call hlimit(nwpawc)
          call bookh
@@ -70,8 +80,8 @@
 * where y reflects the potential beamstrahlung.
 * z ~ Ga(mean,sigma)
 * y ~ 1 - B(alpha,beta)
-* Use the two slope parameters a1(2), a1(3) for the arms beta distribution 
-* and the two slope parameters a1(6), a1(7) for the body beta distribution
+* Use the two slope parameters (alpha, beta) for the arms beta distribution 
+* and the two slope parameters (alpha, beta) for the body beta distribution
       
       write(41,*)nheader
       write(41,*)version
@@ -85,10 +95,10 @@
       write(41,*)s2
       write(41,*)pnorm(1)
       write(41,*)pnorm(2)
-      write(41,*)a1(2)
-      write(41,*)a1(3)
-      write(41,*)a1(6)
-      write(41,*)a1(7)
+      write(41,*)betabody(ia)
+      write(41,*)betabody(ib)
+      write(41,*)betaarms(ia)
+      write(41,*)betaarms(ib)
       
       do iev=1,nevs
       
@@ -108,18 +118,18 @@
          elseif(u .le.pnorm(1)+pnorm(2))then                                                       
 * body         
             rtype = 2
-            y1 = 1d0 - girceb (0d0, 1d0-y1m, a1(7)+1d0, a1(6)+1d0, rng)
-            y2 = 1d0 - girceb (0d0, 1d0-y1m, a1(7)+1d0, a1(6)+1d0, rng)
+            y1 = 1d0-girceb(0d0,1d0-y1m,betabody(ia),betabody(ib),rng)
+            y2 = 1d0-girceb(0d0,1d0-y1m,betabody(ia),betabody(ib),rng)
          elseif (u. le. 0.5d0*(1d0+pnorm(1)+pnorm(2)))then
 * arm1      
             rtype = 3
-            y1 = 1d0 - girceb (0d0, 1d0-y1m, a1(3)+1d0, a1(2)+1d0, rng)           
+            y1 = 1d0-girceb(0d0,1d0-y1m,betaarms(ia),betaarms(ib),rng) 
             y2 = 1d0
          else
 * arm2
             rtype = 4
             y1 = 1d0
-            y2 = 1d0 - girceb (0d0, 1d0-y2m, a1(3)+1d0, a1(2)+1d0, rng) 
+            y2 = 1d0-girceb(0d0,1d0-y2m,betaarms(ia),betaarms(ib),rng) 
          endif
      
 * Scaled energy after BES and beamstrahlung
@@ -137,6 +147,8 @@
             call hfill(105,real(rtype),0.0,1.0)
             call hfill(106,real(x1-x2),0.0,1.0)
             call hfill(107,real(findbin(x1)),0.0,1.0)
+            call hfill(100*(rtype+1)+1,real(x1),0.0,1.0)
+            call hfill(100*(rtype+1)+2,real(x2),0.0,1.0)            
          endif
  
       enddo
@@ -158,6 +170,15 @@
       call hbook1(105,'Type ',4,0.5,4.5,0.0)
       call hbook1(106,'x1-x2',2200,-1.100,1.100,0.0)
       call hbook1(107,'Equiprobability x1 bin',100,0.5,100.5,0.0)
+      call hbook1(201,'x1 R1',1101,-0.0005,1.1005,0.0)
+      call hbook1(202,'x2 R1',1101,-0.0005,1.1005,0.0)
+      call hbook1(301,'x1 R2',1101,-0.0005,1.1005,0.0)
+      call hbook1(302,'x2 R2',1101,-0.0005,1.1005,0.0)
+      call hbook1(401,'x1 R3',1101,-0.0005,1.1005,0.0)
+      call hbook1(402,'x2 R3',1101,-0.0005,1.1005,0.0)
+      call hbook1(501,'x1 R4',1101,-0.0005,1.1005,0.0)
+      call hbook1(502,'x2 R4',1101,-0.0005,1.1005,0.0)      
+      
 
       end
       
