@@ -19,7 +19,6 @@
       integer findbin
       double precision betabody(2)
       double precision betaarms(2)
-      double precision a1(0:7)
       double precision u,girceb
       double precision y1m,y2m
       double precision rg1,rg2
@@ -37,14 +36,14 @@
       include 'seeds.f'
       integer iev
       include 'hinit.f'
-* peak, body
-      data pnorm/0.26307d0,0.28151d0/
-* Note CIRCE Beta distribution is  a1*x^a2*(1-x)^a3     
+* Note CIRCE Beta distribution is  a1*x^a2*(1-x)^a3 (no longer used)
+*      double precision a1(0:7)
 *      data a1 /
 *     $   0.49808d+00,  0.54613d+00,  0.17161d+02, -0.65863d+00, 
-*     $   0.42817d+00, -0.69120d+00,  0.13707d+02, -0.63926d+00 /       
-      data betabody/0.36074d0,14.707d0/
-      data betaarms/0.34164d0,18.161d0/
+*     $   0.42817d+00, -0.69120d+00,  0.13707d+02, -0.63926d+00 /         
+
+*     Beamstrahlung parameters from include file
+      include 'betapars.f'
 
       print *,'Beam energy spread (BES) parameters'
       print *,'s1 (electron) = ',s1
