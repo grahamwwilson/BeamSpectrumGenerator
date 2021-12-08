@@ -10,19 +10,21 @@
       integer nevs
       parameter (nevs=10000)
       integer nheader
-      parameter (nheader=14)
+      parameter (nheader=16)
       integer version
-      parameter (version=4)
+      parameter (version=5)
       integer nparameters
-      parameter (nparameters=8)
+      parameter (nparameters=10)
       integer rtype
       integer findbin
       double precision a1(0:7)
       double precision u,girceb
-      double precision x1m,x2m
+      double precision y1m,y2m
       double precision rg1,rg2
       double precision z1,z2
       double precision y1,y2
+      double precision mu1,mu2
+      parameter (mu1=1.0d0, mu2=1.0d0)
       double precision s1,s2
       double precision pnorm(2)
       parameter (s1=0.190d-2, s2=0.152d-2)
@@ -56,13 +58,20 @@
          call bookh
       endif
       
-      x1m=0d0
-      x2m=0d0
+      y1m=0d0
+      y2m=0d0
       
-* Generate two random numbers according to the CIRCE functions 
-* for scaled beam energy after potential beamstrahlung.
-* Use the two slope parameters a1(2), a1(3) for the arms 
-* and the two slope parameters a1(6), a1(7) for the body
+* Generate two random variates (x1,x2) for Ei/Enominal, following a 
+* probability density function p(x1,x2).
+* The pdf is made up of four regions (the region choice is 
+* governed by the multinomial distribution), 
+* and in each the random variate x = y*z
+* where z reflects the beam energy spread (present in each case), and 
+* where y reflects the potential beamstrahlung.
+* z ~ Ga(mean,sigma)
+* y ~ 1 - B(alpha,beta)
+* Use the two slope parameters a1(2), a1(3) for the arms beta distribution 
+* and the two slope parameters a1(6), a1(7) for the body beta distribution
       
       write(41,*)nheader
       write(41,*)version
@@ -70,6 +79,8 @@
       write(41,*)nevs
       write(41,*)seedm
       write(41,*)seedl
+      write(41,*)mu1
+      write(41,*)mu2
       write(41,*)s1
       write(41,*)s2
       write(41,*)pnorm(1)
@@ -84,48 +95,48 @@
 * Get two normally distributed (standardized random numbers)
          call getgauss(rg1,rg2)
 * Scaled beam energy after uncorrelated Gaussian BES
-         z1 = 1.0d0 + s1*rg1
-         z2 = 1.0d0 + s2*rg2
+         z1 = mu1 + s1*rg1
+         z2 = mu2 + s2*rg2
       
 * Beamstrahlung part      
          call rng(u)
          if (u .le. pnorm(1)) then 
 * peak
             rtype = 1
-            x1 = 1d0
-            x2 = 1d0                                            
+            y1 = 1d0
+            y2 = 1d0                                            
          elseif(u .le.pnorm(1)+pnorm(2))then                                                       
 * body         
             rtype = 2
-            x1 = 1d0 - girceb (0d0, 1d0-x1m, a1(7)+1d0, a1(6)+1d0, rng)
-            x2 = 1d0 - girceb (0d0, 1d0-x1m, a1(7)+1d0, a1(6)+1d0, rng)
+            y1 = 1d0 - girceb (0d0, 1d0-y1m, a1(7)+1d0, a1(6)+1d0, rng)
+            y2 = 1d0 - girceb (0d0, 1d0-y1m, a1(7)+1d0, a1(6)+1d0, rng)
          elseif (u. le. 0.5d0*(1d0+pnorm(1)+pnorm(2)))then
 * arm1      
             rtype = 3
-            x1 = 1d0 - girceb (0d0, 1d0-x1m, a1(3)+1d0, a1(2)+1d0, rng)           
-            x2 = 1d0
+            y1 = 1d0 - girceb (0d0, 1d0-y1m, a1(3)+1d0, a1(2)+1d0, rng)           
+            y2 = 1d0
          else
 * arm2
             rtype = 4
-            x1 = 1d0
-            x2 = 1d0 - girceb (0d0, 1d0-x2m, a1(3)+1d0, a1(2)+1d0, rng) 
+            y1 = 1d0
+            y2 = 1d0 - girceb (0d0, 1d0-y2m, a1(3)+1d0, a1(2)+1d0, rng) 
          endif
      
 * Scaled energy after BES and beamstrahlung
-         y1 = z1*x1
-         y2 = z2*x2
+         x1 = y1*z1
+         x2 = y2*z2
          
 * Save information for each event to file
-         write(41,*)iev,rtype,y1,y2,x1,x2,z1,z2
+         write(41,*)iev,rtype,x1,x2,y1,y2,z1,z2
 
          if(lhbook)then
-            call hfill(101,real(y1),0.0,1.0)
-            call hfill(102,real(y2),0.0,1.0)
-            call hfill(103,real(sqrt(y1*y2)),0.0,1.0)
-            call hfill(104,real(abs(y1-y2)),0.0,1.0)
+            call hfill(101,real(x1),0.0,1.0)
+            call hfill(102,real(x2),0.0,1.0)
+            call hfill(103,real(sqrt(x1*x2)),0.0,1.0)
+            call hfill(104,real(abs(x1-x2)),0.0,1.0)
             call hfill(105,real(rtype),0.0,1.0)
-            call hfill(106,real(y1-y2),0.0,1.0)
-            call hfill(107,real(findbin(y1)),0.0,1.0)
+            call hfill(106,real(x1-x2),0.0,1.0)
+            call hfill(107,real(findbin(x1)),0.0,1.0)
          endif
  
       enddo
