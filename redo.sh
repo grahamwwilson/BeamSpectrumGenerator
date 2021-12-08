@@ -23,5 +23,6 @@ time ./testbc
 
 # Rename output file
 mv fort.41 testbc-${VERSION}-${SEEDS}.dat
+cp testbc.hbook testbc-${VERSION}-${SEEDS}.hbook
 
 exit

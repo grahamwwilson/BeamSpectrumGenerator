@@ -8,7 +8,7 @@
       double precision x1,x2
       external rng
       integer nevs
-      parameter (nevs=10000)
+      parameter (nevs=1000000)
       integer nheader
       parameter (nheader=16)
       integer version
@@ -27,7 +27,9 @@
       double precision mu1,mu2
       parameter (mu1=1.0d0, mu2=1.0d0)
       double precision s1,s2
+      double precision bnormbody,bnormarms
       double precision pnorm(2)
+      external double precision dgamma
       parameter (s1=0.190d-2, s2=0.152d-2)
       integer ia,ib
       parameter (ia=1, ib=2)
@@ -61,6 +63,13 @@
       
       print *,'Body (alpha,beta): ',betabody(ia),betabody(ib)      
       print *,'Arms (alpha,beta): ',betaarms(ia),betaarms(ib)
+
+      bnormbody = dgamma(betabody(ia))*dgamma(betabody(ib))/
+     +            dgamma(betabody(ia)+betabody(ib))
+      bnormarms = dgamma(betaarms(ia))*dgamma(betaarms(ib))/
+     +            dgamma(betaarms(ia)+betaarms(ib))
+      print *,'B(alp,beta) = ',bnormbody,bnormarms    
+
 
       if(lhbook)then
          call hlimit(nwpawc)
