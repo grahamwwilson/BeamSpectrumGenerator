@@ -1,0 +1,28 @@
+FIXME.
+
+
+ISSUE 1
+-------
+
+Some events end up with infinite weights likely caused by y1 = 1 within 
+double precision accuracy. ie about 1e-16.
+Frequency is 8 events per million for betaalt.f compared to betapars1.f.
+Current solution is to set the weight to the pregion ratio and ignore the 
+beta distribution difference.
+
+Possible solutions.
+
+1. May be better to save the actual value of dy1 where y1 = 1.0 - dy1 
+   and evaluate the probability density more carefully.
+   
+2. Could it be that it is exacerbated by RM48 only having 48 bits precision?
+
+3. Would it be better to use some remapping like used by Thorsten Ohl in CIRCE?
+
+ISSUE 2
+-------
+
+Would be better to store the value of 1-x etc in the file so that we can see 
+small values, and use scientific notation for the values.
+
+
