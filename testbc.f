@@ -8,7 +8,7 @@
       double precision x1,x2
       external rng
       integer nevs
-      parameter (nevs=1000000)
+      parameter (nevs=100000)
 *      parameter (nevs=187100)
       integer nheader
       parameter (nheader=16)
