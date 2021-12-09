@@ -227,13 +227,14 @@
          x1 = y1*z1
          x2 = y2*z2
          
+         ibin1 = findbinx1(x1)
+         ibin2 = findbinx2(x2)                
+         
 * Save information for each event to file
-         write(45,*)iev,rtype,x1,x2,y1,y2,z1,z2,weight,weightp,rwt
+         write(45,*)iev,rtype,x1,x2,y1,y2,z1,z2,
+     +              weight,weightp,rwt,ibin1,ibin2
 
          if(lhbook)then
-         
-            ibin1 = findbinx1(x1)
-            ibin2 = findbinx2(x2)            
             
             call hfill(101,real(x1),0.0,1.0)
             call hfill(102,real(x2),0.0,1.0)

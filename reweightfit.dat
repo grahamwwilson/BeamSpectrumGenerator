@@ -1,0 +1,16 @@
+SET TITLE
+Beamstrahlung fit
+PARAMETERS
+1 'ppeak'             0.25    0.01
+2 'pbody'             0.25    0.01
+3 'alphab'            0.375   0.01
+4 'betab'             15.0    0.1
+5 'alphaa'            0.325   0.01
+6 'betaa'             17.0    0.1
+
+SET PRINTOUT 1
+SET ERRORDEF 1.0
+MINIMIZE
+MINOS
+SCAN
+RETURN
