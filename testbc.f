@@ -17,7 +17,7 @@
       integer nparameters
       parameter (nparameters=10)
       integer rtype
-      integer findbin
+      integer findbinx1,findbinx2
       double precision betabody(4)
       double precision betaarms(4)
       double precision betabodyp(4)
@@ -232,8 +232,8 @@
 
          if(lhbook)then
          
-            ibin1 = findbin(x1)
-            ibin2 = findbin(x2)            
+            ibin1 = findbinx1(x1)
+            ibin2 = findbinx2(x2)            
             
             call hfill(101,real(x1),0.0,1.0)
             call hfill(102,real(x2),0.0,1.0)
