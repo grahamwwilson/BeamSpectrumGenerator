@@ -12,3 +12,4 @@ betapars.f
 *.hbook
 *.out
 *.root
+*.x*sorted

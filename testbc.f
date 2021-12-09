@@ -8,7 +8,7 @@
       double precision x1,x2
       external rng
       integer nevs
-      parameter (nevs=100000)
+      parameter (nevs=1000000)
 *      parameter (nevs=187100)
       integer nheader
       parameter (nheader=16)
@@ -242,7 +242,8 @@
             call hfill(105,real(rtype),0.0,1.0)
             call hfill(106,real(x1-x2),0.0,1.0)
             call hfill(107,real(ibin1),0.0,1.0)
-            call hfill(108,real(ibin2),0.0,1.0)            
+            call hfill(108,real(ibin2),0.0,1.0)
+            call hfill(109,real(ibin1),real(ibin2),1.0)                        
             call hfill(200+10*rtype+1,real(x1),0.0,1.0)
             call hfill(200+10*rtype+2,real(x2),0.0,1.0)  
             
@@ -254,7 +255,8 @@
             call hfill(1105,real(rtype),0.0,real(rwt))
             call hfill(1106,real(x1-x2),0.0,real(rwt))
             call hfill(1107,real(ibin1),0.0,real(rwt))
-            call hfill(1108,real(ibin2),0.0,real(rwt))            
+            call hfill(1108,real(ibin2),0.0,real(rwt)) 
+            call hfill(1109,real(ibin1),real(ibin2),real(rwt))                          
             call hfill(1200+10*rtype+1,real(x1),0.0,real(rwt))
             call hfill(1200+10*rtype+2,real(x2),0.0,real(rwt))            
                       
@@ -265,6 +267,9 @@
       close(45)
       
       if(lhbook)then
+* Unroll 2d histo
+         call unroll(109,110)
+         call unroll(1109,1110)      
 *         call histdo
          call hrput(0,'testbc.hbook','NT')
          call hprint(107)
@@ -286,8 +291,10 @@
       call hbook1(104,'|x1-x2|',1100,0.000,1.100,0.0)
       call hbook1(105,'Type ',4,0.5,4.5,0.0)
       call hbook1(106,'x1-x2',2200,-1.100,1.100,0.0)
-      call hbook1(107,'Equiprobability x1 bin',100,0.5,100.5,0.0)
-      call hbook1(108,'Equiprobability x2 bin',100,0.5,100.5,0.0)
+      call hbook1(107,'x1 bin',100,0.5,100.5,0.0)
+      call hbook1(108,'x2 bin',100,0.5,100.5,0.0)
+      call hbook2(109,'(x1,x2) bin',20,0.5,100.5,20,0.5,100.5,0.0)
+      call hbook1(110,'(x1,x2) bin 1d',400,0.5,400.5,0.0)
       call hbook1(211,'x1 R1',1101,-0.0005,1.1005,0.0)
       call hbook1(212,'x2 R1',1101,-0.0005,1.1005,0.0)
       call hbook1(221,'x1 R2',1101,-0.0005,1.1005,0.0)
@@ -305,8 +312,10 @@
       call hbook1(1104,'|x1-x2|',1100,0.000,1.100,0.0)
       call hbook1(1105,'Type ',4,0.5,4.5,0.0)
       call hbook1(1106,'x1-x2',2200,-1.100,1.100,0.0)
-      call hbook1(1107,'Equiprobability x1 bin',100,0.5,100.5,0.0)
-      call hbook1(1108,'Equiprobability x2 bin',100,0.5,100.5,0.0)      
+      call hbook1(1107,'x1 bin',100,0.5,100.5,0.0)
+      call hbook1(1108,'x2 bin',100,0.5,100.5,0.0)
+      call hbook2(1109,'(x1,x2) bin',20,0.5,100.5,20,0.5,100.5,0.0)
+      call hbook1(1110,'(x1,x2) bin 1d',400,0.5,400.5,0.0)                 
       call hbook1(1211,'x1 R1',1101,-0.0005,1.1005,0.0)
       call hbook1(1212,'x2 R1',1101,-0.0005,1.1005,0.0)
       call hbook1(1221,'x1 R2',1101,-0.0005,1.1005,0.0)
@@ -322,3 +331,4 @@
       include 'girceb.f'
       include 'getgauss.f'
       include 'findbin.f'
+      include 'unroll.f'
