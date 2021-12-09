@@ -8,7 +8,7 @@
       double precision x1,x2
       external rng
       integer nevs
-      parameter (nevs=1000000)
+      parameter (nevs=100000)
 *      parameter (nevs=187100)
       integer nheader
       parameter (nheader=16)
@@ -42,8 +42,9 @@
       double precision weightp,weightb
       double precision rwt
       double precision dy1,dy2
-      integer ibin   
-      integer flag   
+      integer ibin1,ibin2   
+      integer flag
+      integer countfperr
       external double precision dgamma
       parameter (s1=0.190d-2, s2=0.152d-2)
       integer ia,ib,ja,jb
@@ -133,6 +134,8 @@
       write(45,*)betaarms(ia)
       write(45,*)betaarms(ib)
       
+      countfperr = 0
+      
       do iev=1,nevs
       
 * Get two normally distributed (standardized random numbers)
@@ -216,7 +219,8 @@
          else
             rwt = pregionp/pregion
             print *,'Setting rwt to ',rwt,             
-     +              ' in event ',iev,' region ',rtype   
+     +              ' in event ',iev,' region ',rtype
+            countfperr = countfperr + 1
          endif
          
 * Scaled energy after BES and beamstrahlung
@@ -228,7 +232,8 @@
 
          if(lhbook)then
          
-            ibin = findbin(x1)
+            ibin1 = findbin(x1)
+            ibin2 = findbin(x2)            
             
             call hfill(101,real(x1),0.0,1.0)
             call hfill(102,real(x2),0.0,1.0)
@@ -236,17 +241,20 @@
             call hfill(104,real(abs(x1-x2)),0.0,1.0)
             call hfill(105,real(rtype),0.0,1.0)
             call hfill(106,real(x1-x2),0.0,1.0)
-            call hfill(107,real(ibin),0.0,1.0)
+            call hfill(107,real(ibin1),0.0,1.0)
+            call hfill(108,real(ibin2),0.0,1.0)            
             call hfill(200+10*rtype+1,real(x1),0.0,1.0)
             call hfill(200+10*rtype+2,real(x2),0.0,1.0)  
             
+            call hfill(1001,real(rwt),0.0,1.0)
             call hfill(1101,real(x1),0.0,real(rwt))
             call hfill(1102,real(x2),0.0,real(rwt))
             call hfill(1103,real(sqrt(x1*x2)),0.0,real(rwt))
             call hfill(1104,real(abs(x1-x2)),0.0,real(rwt))
             call hfill(1105,real(rtype),0.0,real(rwt))
             call hfill(1106,real(x1-x2),0.0,real(rwt))
-            call hfill(1107,real(ibin),0.0,real(rwt))
+            call hfill(1107,real(ibin1),0.0,real(rwt))
+            call hfill(1108,real(ibin2),0.0,real(rwt))            
             call hfill(1200+10*rtype+1,real(x1),0.0,real(rwt))
             call hfill(1200+10*rtype+2,real(x2),0.0,real(rwt))            
                       
@@ -263,6 +271,8 @@
          call hprint(1107)
       endif
       
+      print *,'Number of FP error events ',countfperr
+      
       end
       
       subroutine bookh
@@ -277,6 +287,7 @@
       call hbook1(105,'Type ',4,0.5,4.5,0.0)
       call hbook1(106,'x1-x2',2200,-1.100,1.100,0.0)
       call hbook1(107,'Equiprobability x1 bin',100,0.5,100.5,0.0)
+      call hbook1(108,'Equiprobability x2 bin',100,0.5,100.5,0.0)
       call hbook1(211,'x1 R1',1101,-0.0005,1.1005,0.0)
       call hbook1(212,'x2 R1',1101,-0.0005,1.1005,0.0)
       call hbook1(221,'x1 R2',1101,-0.0005,1.1005,0.0)
@@ -287,6 +298,7 @@
       call hbook1(242,'x2 R4',1101,-0.0005,1.1005,0.0)
       
 * Weighted distributions
+      call hbook1(1001,'reweight',1000,0.0,10.0,0.0)
       call hbook1(1101,'x1 ',1101,-0.0005,1.1005,0.0)
       call hbook1(1102,'x2 ',1101,-0.0005,1.1005,0.0)
       call hbook1(1103,'sqrt(x1*x2)',1101,-0.0005,1.1005,0.0)      
@@ -294,6 +306,7 @@
       call hbook1(1105,'Type ',4,0.5,4.5,0.0)
       call hbook1(1106,'x1-x2',2200,-1.100,1.100,0.0)
       call hbook1(1107,'Equiprobability x1 bin',100,0.5,100.5,0.0)
+      call hbook1(1108,'Equiprobability x2 bin',100,0.5,100.5,0.0)      
       call hbook1(1211,'x1 R1',1101,-0.0005,1.1005,0.0)
       call hbook1(1212,'x2 R1',1101,-0.0005,1.1005,0.0)
       call hbook1(1221,'x1 R2',1101,-0.0005,1.1005,0.0)

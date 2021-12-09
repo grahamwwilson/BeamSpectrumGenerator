@@ -1,0 +1,61 @@
+macro comparex1 [1] [2]
+*
+* Compare MC distribution for parameter set 2 with reweighted distribution
+* for parameter set 2 using parameter set 1 MC.
+*
+*** Begin of history file: Wed Dec  8 22:38:08 2021
+osetup c
+hi/fil 21 testbc-[1].hbook
+cd //lun21
+hrin 107
+hrin 108
+cd //lun21
+pwd
+cd //pawc
+hi/list
+close 21
+hi/fil 21 testbc-1-1.hbook
+cd //lun21
+hrin 1001
+hrin 1107
+hrin 1108
+cd //pawc
+hi/list
+close 21
+hi/list
+h/pl 1001
+opt stat
+set stat 111111
+h/pl 1001
+idopt 1001 logy
+h/pl 1001
+zone 1 2
+h/pl 107
+h/pl 1107
+v/cr cdata(100)
+get_vect/cont 107 cdata
+v/print cdata(1:5)
+v/cr cmod(100)
+get_vect/cont 1107 cmod
+v/print cmod(1:5)
+sigma fs=[2]
+v/cr cmodc(100)
+v/op/vscale cmod fs cmodc
+v/print cmod(1:5)
+v/print cmodc(1:5)
+v/cr resid(100)
+v/op/vsub cdata cmodc resid
+v/print cdata(1:5)
+v/print resid(1:5)
+v/cr vard(100)
+v/cop cmodc vard
+v/print vard(1:5)
+v/cr chisq(100)
+v/op/vmult resid resid chisq
+v/op/vdiv chisq vard chisq
+v/print chisq(1:5)
+v/print chisq
+sigma x=vsum(chisq)
+sigma print x
+return
+*** End   of history file: Wed Dec  8 22:58:59 2021
