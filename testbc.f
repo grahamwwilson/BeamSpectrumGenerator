@@ -219,7 +219,9 @@
          else
             rwt = pregionp/pregion
             print *,'Setting rwt to ',rwt,             
-     +              ' in event ',iev,' region ',rtype
+     +              ' in event ',iev,' region ',rtype,' and fixing wts'     
+            weightp = pregionp
+            weight = pregion
             countfperr = countfperr + 1
          endif
          

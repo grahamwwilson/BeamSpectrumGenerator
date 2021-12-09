@@ -20,6 +20,10 @@
       
       include 'exptdefn.f'
       
+      integer n
+      integer iev,rtype,ibin1,ibin2
+      double precision x1,x2,y1,y2,z1,z2,weight,weightp,rwt
+      
       integer i
 
       external fcn
@@ -32,13 +36,27 @@
       call hrget(0,
      +  '/home/graham/BeamSpectrumGenerator/100k/testbc-2-2.hbook',' ')
       call hprint(107)
-      call hunpak(107,cont,'hist',1)      
-      print *,'Data to fit '
+      call hunpak(107,cont1,'hist',1)
+      call hprint(108)
+      call hunpak(108,cont2,'hist',1)                
+      print *,'Data to fit                        x1          x2 '
       do i=1,nbins
-         print *,'Bin ',i,' entries ',nint(cont(i))
+         print *,'Bin ',i,' entries ',nint(cont1(i)),nint(cont2(i))
       enddo
       
-* Next get the pre-generated MC events.      
+* Next read the pre-generated MC events and store relevant info
+
+      open(unit=21,file='1M/testbc-2-2.dat',status='old')
+      n=0
+   10 continue
+      read(21,*,end=999)iev,rtype,x1,x2,y1,y2,z1,z2,
+     +                   weight,weightp,rwt,ibin1,ibin2
+      n = n+1
+      goto 10
+  999 continue
+      close(21)
+      
+      print *,'Number of events read ',n  
 
       open(unit=8,file='reweightfit.dat',status='old')
 
@@ -77,7 +95,7 @@
          print *,x(1)
          print *,'fval0 = ',fval
          do i=1,nbins
-            print *,'Bin ',i,' entries ',nint(cont(i))            
+            print *,'Bin ',i,' entries ',nint(cont1(i)),nint(cont2(i))
          enddo
       endif
 

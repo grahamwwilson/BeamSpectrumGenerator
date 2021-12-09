@@ -1,4 +1,4 @@
       integer nbins
       parameter (nbins=100)
-      real cont(100)
-      common/expt/cont
+      real cont1(100),cont2(100)
+      common/expt/cont1,cont2
