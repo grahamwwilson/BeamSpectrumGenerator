@@ -8,8 +8,7 @@
       double precision x1,x2
       external rng
       integer nevs
-      parameter (nevs=100000)
-*      parameter (nevs=187100)
+      parameter (nevs=10000000)
       integer nheader
       parameter (nheader=16)
       integer version
@@ -42,7 +41,7 @@
       double precision weightp,weightb
       double precision rwt
       double precision dy1,dy2
-      integer ibin1,ibin2   
+      integer ibin1,ibin2,icomb  
       integer flag
       integer countfperr
       external double precision dgamma
@@ -230,11 +229,12 @@
          x2 = y2*z2
          
          ibin1 = findbinx1(x1)
-         ibin2 = findbinx2(x2)                
+         ibin2 = findbinx2(x2)
+         icomb = 100*(ibin1-1) + ibin2
          
 * Save information for each event to file
          write(45,*)iev,rtype,x1,x2,y1,y2,z1,z2,
-     +              weight,weightp,rwt,ibin1,ibin2
+     +              weight,weightp,rwt,ibin1,ibin2,icomb
 
          if(lhbook)then
             
@@ -246,7 +246,8 @@
             call hfill(106,real(x1-x2),0.0,1.0)
             call hfill(107,real(ibin1),0.0,1.0)
             call hfill(108,real(ibin2),0.0,1.0)
-            call hfill(109,real(ibin1),real(ibin2),1.0)                        
+            call hfill(109,real(ibin1),real(ibin2),1.0)
+            call hfill(111,real(icomb),0.0,1.0)
             call hfill(200+10*rtype+1,real(x1),0.0,1.0)
             call hfill(200+10*rtype+2,real(x2),0.0,1.0)  
             
@@ -259,7 +260,8 @@
             call hfill(1106,real(x1-x2),0.0,real(rwt))
             call hfill(1107,real(ibin1),0.0,real(rwt))
             call hfill(1108,real(ibin2),0.0,real(rwt)) 
-            call hfill(1109,real(ibin1),real(ibin2),real(rwt))                          
+            call hfill(1109,real(ibin1),real(ibin2),real(rwt))
+            call hfill(1111,real(icomb),0.0,real(rwt))                                     
             call hfill(1200+10*rtype+1,real(x1),0.0,real(rwt))
             call hfill(1200+10*rtype+2,real(x2),0.0,real(rwt))            
                       
@@ -298,6 +300,7 @@
       call hbook1(108,'x2 bin',100,0.5,100.5,0.0)
       call hbook2(109,'(x1,x2) bin',20,0.5,100.5,20,0.5,100.5,0.0)
       call hbook1(110,'(x1,x2) bin 1d',400,0.5,400.5,0.0)
+      call hbook1(111,'icomb bin',10000,0.5,10000.5,0.0)
       call hbook1(211,'x1 R1',1101,-0.0005,1.1005,0.0)
       call hbook1(212,'x2 R1',1101,-0.0005,1.1005,0.0)
       call hbook1(221,'x1 R2',1101,-0.0005,1.1005,0.0)
@@ -318,7 +321,8 @@
       call hbook1(1107,'x1 bin',100,0.5,100.5,0.0)
       call hbook1(1108,'x2 bin',100,0.5,100.5,0.0)
       call hbook2(1109,'(x1,x2) bin',20,0.5,100.5,20,0.5,100.5,0.0)
-      call hbook1(1110,'(x1,x2) bin 1d',400,0.5,400.5,0.0)                 
+      call hbook1(1110,'(x1,x2) bin 1d',400,0.5,400.5,0.0)
+      call hbook1(1111,'icomb bin',10000,0.5,10000.5,0.0)                       
       call hbook1(1211,'x1 R1',1101,-0.0005,1.1005,0.0)
       call hbook1(1212,'x2 R1',1101,-0.0005,1.1005,0.0)
       call hbook1(1221,'x1 R2',1101,-0.0005,1.1005,0.0)
