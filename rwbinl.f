@@ -36,14 +36,12 @@
 * and store in expt common block (see exptdefn.f include file) for use in fcn
       call hrget(0,
      +  '/home/graham/BeamSpectrumGenerator/100k/testbc-2-2.hbook',' ')
-*      call hprint(107)
       call hunpak(111,cont,'hist',1)
-*      call hprint(108)
-*      call hunpak(108,cont2,'hist',1)                
-      print *,'Some of the data to fit            '
-      do i=1,100
-         print *,'Bin ',i,' entries ',nint(cont(i))
+      ntotdata = 0         
+      do i=1,nbins
+         ntotdata = ntotdata+ cont(i)
       enddo
+      print *,'Number of data events being fitted ',ntotdata
       
 * Next read the pre-generated MC events and store relevant info
       open(unit=22,file="10m/testbc-1-1.dat",status='old')
@@ -125,12 +123,13 @@
       include 'mcdefn.f'
       include 'fcnlocal.f'
       integer icomb
-      double precision ff
-      double precision wsum(nbins)
+* fscale: defined by equation 26 in Poss-Sailer      
+      double precision fscale
+      double precision wsum(nbins),wsumsq(nbins),wsumtot
+      integer nentries(nbins)
       double precision rwt
-      double precision chisq1,chisq2
-      double precision ndata1,nexp1,var1,chi1
-      double precision ndata2,nexp2,var2,chi2
+      double precision chisq
+      double precision ndata,nmodel,var,chi
       double precision chisqi
       integer myflag
 
@@ -141,15 +140,15 @@
       betab = x(4)
       alphaa = x(5)
       betaa = x(6)
-      ff = x(7)
       parm = 0.5d0*(1.0d0-ppeak-pbody)
       call cpbeta(bbody,alphab,betab,normb)
       call cpbeta(barms,alphaa,betaa,norma)
-      print *,'Pars: ',x(1),x(2),x(3),x(4),x(5),x(6),x(7)
-      
+
       fval = 0.0d0
       do j=1,nbins
          wsum(j) = 0.0d0
+         wsumsq(j) = 0.0d0
+         nentries(j) = 0
       enddo
       
 * Loop over MC events
@@ -195,43 +194,58 @@
          endif
          
          rwt =wtp/wt
-* Sum the weights for the (x1,x2) distribution bin
+* Sum the reweighting weights for the (x1,x2) distribution bin
          if(myflag.eq.0)then
             wsum(icomb) = wsum(icomb) + rwt
+            wsumsq(icomb) = wsumsq(icomb) + rwt*rwt
+            nentries(icomb) = nentries(icomb) + 1
          endif
       enddo
 
-* Now construct the chi-squared 
-      chisq1 = 0.0d0
-      do j=1,nbins
-         ndata1 = dble(cont(j))
-         nexp1  = ff*wsum(j)
-         var1 = nexp1
-         chi1 = (ndata1 - nexp1)/sqrt(var1)
-         chisq1 = chisq1 + chi1*chi1
+* Sum ALL the weights
+      wsumtot = 0.0d0
+      do i=1,nbins
+         wsumtot = wsumtot + wsum(i)
       enddo
-     
-      print *,'Chisq value ',chisq1
-      fval = chisq1
+      
+      fscale = dble(ntotdata)/wsumtot
+
+* Now construct the chi-squared
+* FIXME. Should also include statistical uncertainty on model prediction
+
+      chisq = 0.0d0
+      do j=1,nbins
+         ndata = dble(cont(j))
+         nmodel  = fscale*wsum(j)
+* Uncertainties
+* 1. statistical uncertainty on finite data sample. 
+*    Use model value for data statistics. => variance = nmodel
+* 2. statistical uncertainty on the prediction
+*    Use variance = fscale**2*wsumsq(j)
+         var = nmodel + fscale*fscale*wsumsq(j)
+         chi = (ndata - nmodel)/sqrt(var)
+         chisq = chisq + chi*chi
+      enddo
+      print *,'f= ',chisq,
+     +        ' Pars: ',x(1),x(2),x(3),x(4),x(5),x(6),' scale ',fscale
+      fval = chisq
       
       if(iflag.eq.1)then
          print *,'Minimization Initialization '
          print *,'fval0 = ',fval
       endif
 
-* FIXME. Should also include statistical uncertainty on model prediction
-
       if(iflag.eq.3)then
          print *,'Minimization Finished '
          print *,'fval = ',fval
          do j=1,nbins
-            ndata1 = dble(cont(j))
-            nexp1  = ff*wsum(j)
-            var1 = nexp1
-            chi1 = (ndata1 - nexp1)/sqrt(var1)
-            chisqi = chi1*chi1
+            ndata = dble(cont(j))
+            nmodel  = fscale*wsum(j)
+            var = nmodel + fscale*fscale*wsumsq(j)
+            chi = (ndata - nmodel)/sqrt(var)
+            chisqi = chi*chi
             if(chisqi.gt.9.0d0)then
-               print *,'Big chisq ',j,ndata1,nexp1,chi1,chisqi
+               print *,'Big chisq ',j,ndata,nmodel,chi,chisqi
             endif
          enddo
       endif
