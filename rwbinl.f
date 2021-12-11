@@ -22,7 +22,7 @@
 
 * Toggle this to fit different data-sets
       integer ichoice
-      parameter (ichoice = -1)
+      parameter (ichoice = 4)
 
       integer n
       integer iev,rtype,ibin1,ibin2,icomb
@@ -52,6 +52,12 @@
       elseif(ichoice.eq.1)then
          call hrget(0,
      +  '/home/graham/gpDigest/gplumi-run5-pluszv.hbook',' ')
+      elseif(ichoice.eq.3)then
+         call hrget(0,
+     +  '/home/graham/gpDigest/gplumi-run5-bigzv.hbook',' ')
+      elseif(ichoice.eq.4)then
+         call hrget(0,
+     +  '/home/graham/gpDigest/gplumi-run5-smallzv.hbook',' ')
       else
          print *,'Looks like input dataset is not found!'
       endif
