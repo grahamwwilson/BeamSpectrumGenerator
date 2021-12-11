@@ -3,7 +3,6 @@ FIXME.
 
 ISSUE 1
 -------
-
 Some events end up with infinite weights likely caused by y1 = 1 within 
 double precision accuracy. ie about 1e-16.
 Frequency is 8 events per million for betaalt.f compared to betapars1.f.
@@ -21,8 +20,39 @@ Possible solutions.
 
 ISSUE 2
 -------
-
 Would be better to store the value of 1-x etc in the file so that we can see 
 small values, and use scientific notation for the values.
 
+ISSUE 3
+-------
+Chi-squared fits with approx 10 events per bin look OK but 
+end up with the highest chi-squared contributions all being +ve deviations.
+With 10,000 bins find 37 with chi>3.0.
+p(chisq>9.0, nu=1) = 0.0026. So expect 10,000*0.0026 = 26. 
+So maybe not so unreasonable.
 
+Observe 4 with chisq>16.0
+
+test-rw-6.out has total chisq of 10,042, which by itself is very reasonable.
+
+Is this just an artefact of the lack of Poisson statistics?, and this would 
+be cured by using larger sample? OK let's re-check with the 1M data-set.
+Note this has the same first 100k events.
+
+=>> chisqtot = 9907/9993. YAY! Total of 22 bins with chisq>9.0. 
+Now we have 5 negative ones, and largest individual deviation of +3.67 sigma.
+
+=> LOOKS GOOD!
+
+Would be good to move to a binned likelihood or event-by-event likelihood. 
+Need to be able to account for the MC stat. errors. 
+This is similar to the Barlow-Beeston paper.
+"Fitting using finite MC samples", CPC 1993. Also MAN/HEP/93/1
+but that was focussed on fitting the fractions of distinct contributions 
+to data.
+
+ISSUE 4
+-------
+There was some statistical issue pointed out 
+in the OPAL mW reweighting Technical Notes TN468 
+associated with averaging over many MC datasets some with dubious stats.

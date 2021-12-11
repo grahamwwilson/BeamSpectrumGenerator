@@ -35,7 +35,7 @@
 * Read data from histogram to be fitted 
 * and store in expt common block (see exptdefn.f include file) for use in fcn
       call hrget(0,
-     +  '/home/graham/BeamSpectrumGenerator/100k/testbc-2-2.hbook',' ')
+     +  '/home/graham/BeamSpectrumGenerator/1m/testbc-2-2.hbook',' ')
       call hunpak(111,cont,'hist',1)
       ntotdata = 0         
       do i=1,nbins
