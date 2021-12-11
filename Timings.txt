@@ -22,3 +22,10 @@ With histograms   : 3.080s
 testb.
 10M events using RM48 for rng and RNORMX(RANLUX) for Gaussian.
 => time = 7.050s.
+
+rwbinl.f
+10M events in MC file. With MINOS. 
+graham:~/BeamSpectrumGenerator$ time ./rwbinl >test-rw-9.out
+real	12m3.730s
+user	12m2.267s
+sys	0m1.280s

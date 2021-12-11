@@ -1,0 +1,13 @@
+Consider changing the parametrization 
+to replace pbody by parms?
+or ppeak by parms?
+
+There are a few really correlated parameters:
+1.  96.7%: ppeak/alphaa
+2. -95.6%: pbody/alphab
+
+The alpha/beta correlation for body = +82.8%
+The alpha/beta correlation for arms = +83.7%
+
+We can now consider trying to fit 3 quantiles of z_PV.
+This is likely to change parm1 relative to parm2.

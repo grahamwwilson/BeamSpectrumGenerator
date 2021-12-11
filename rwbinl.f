@@ -2,8 +2,7 @@
 *      
 * Plan
 *
-* 1. Read in unweighted data sampled from alternative model (P2) using 
-*    histogram
+* 1. Read in unweighted using histogram
 *
 * 2. Fit to the unweighted data based on reweighting MC events 
 *    from model generated with model P1.
@@ -21,6 +20,10 @@
       include 'exptdefn2.f'
       include 'mcdefn.f'
 
+* Toggle this to fit different data-sets
+      integer ichoice
+      parameter (ichoice = -1)
+
       integer n
       integer iev,rtype,ibin1,ibin2,icomb
       double precision x1,x2,y1,y2,z1,z2,weight,weightp,rwt
@@ -34,8 +37,25 @@
       
 * Read data from histogram to be fitted 
 * and store in expt common block (see exptdefn.f include file) for use in fcn
-      call hrget(0,
+
+      print *,'ichoice set to ',ichoice
+
+      if(ichoice.eq.-999)then
+         call hrget(0,
      +  '/home/graham/BeamSpectrumGenerator/1m/testbc-2-2.hbook',' ')
+      elseif(ichoice.eq.0)then
+         call hrget(0,
+     +  '/home/graham/gpDigest/gplumi-run5.hbook',' ')
+      elseif(ichoice.eq.-1)then
+         call hrget(0,
+     +  '/home/graham/gpDigest/gplumi-run5-minuszv.hbook',' ')
+      elseif(ichoice.eq.1)then
+         call hrget(0,
+     +  '/home/graham/gpDigest/gplumi-run5-pluszv.hbook',' ')
+      else
+         print *,'Looks like input dataset is not found!'
+      endif
+
       call hunpak(111,cont,'hist',1)
       ntotdata = 0         
       do i=1,nbins
@@ -131,6 +151,7 @@
       double precision chisq
       double precision ndata,nmodel,var,chi
       double precision chisqi
+      integer nbig
       integer myflag
 
 * Copy fit parameters into more amenable variables
@@ -238,6 +259,7 @@
       if(iflag.eq.3)then
          print *,'Minimization Finished '
          print *,'fval = ',fval
+         nbig = 0
          do j=1,nbins
             ndata = dble(cont(j))
             nmodel  = fscale*wsum(j)
@@ -246,8 +268,10 @@
             chisqi = chi*chi
             if(chisqi.gt.9.0d0)then
                print *,'Big chisq ',j,ndata,nmodel,chi,chisqi
+               nbig = nbig + 1
             endif
          enddo
+         print *,'No. of bins exceeding 3 sigma (expect 0.33%)',nbig
       endif
       
       end
