@@ -66,6 +66,6 @@ ISSUE 6
 -------
 Same as above with MC array size. 
 FIXED -> Use number of MC events read in fit function, and 
-tolerate the fact that the array size of 10M may often 
-be over-dimensioned for the quicker diagnostic fits.
+tolerate for now the fact that the array size of 10M may often 
+be over-sized for the quicker diagnostic fits.
                

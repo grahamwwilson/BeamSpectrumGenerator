@@ -1,6 +1,6 @@
 * Note. Likely not a problem if the array is much bigger than needed.
       integer nmcarray
-      parameter (nmcarray=10000000)
+      parameter (nmcarray=1000000)
       integer nmc
       integer nvars,mvars
       parameter (nvars = 7, mvars = 4)
