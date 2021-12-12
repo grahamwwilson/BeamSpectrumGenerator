@@ -56,3 +56,13 @@ ISSUE 4
 There was some statistical issue pointed out 
 in the OPAL mW reweighting Technical Notes TN468 
 associated with averaging over many MC datasets some with dubious stats.
+
+ISSUE 5
+-------
+Make running different ichoice,jchoice versions more seamless.
+DONE.
+
+ISSUE 6
+-------
+Same as above with MC array size. 
+Work-around -> OK if it is too big.

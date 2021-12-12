@@ -20,17 +20,20 @@
       include 'exptdefn2.f'
       include 'mcdefn.f'
 
-* Toggle this to fit different data-sets
+* Toggle ichoice to fit different GP or pseudo-data data-sets
       integer ichoice
-      parameter (ichoice = 0)
+      include 'ichoice.f'
       
-* Toggle this to use different reweighting MC data-sets
+* Toggle jchoice to use different reweighting MC data-sets
       integer jchoice
-      parameter (jchoice = 0)
+      include 'jchoice.f'
 
-      integer n
       integer iev,rtype,ibin1,ibin2,icomb
       double precision x1,x2,y1,y2,z1,z2,weight,weightp,rwt
+      
+      integer lun
+      parameter (lun = 22)
+      integer ntoread
       
       integer i
 
@@ -51,18 +54,18 @@
       elseif(ichoice.eq.0)then
          call hrget(0,
      +  '/home/graham/gpDigest/gplumi-run5.hbook',' ')
-      elseif(ichoice.eq.-1)then
+      elseif(ichoice.eq.1)then
          call hrget(0,
      +  '/home/graham/gpDigest/gplumi-run5-minuszv.hbook',' ')
-      elseif(ichoice.eq.1)then
+      elseif(ichoice.eq.2)then
          call hrget(0,
      +  '/home/graham/gpDigest/gplumi-run5-pluszv.hbook',' ')
       elseif(ichoice.eq.3)then
          call hrget(0,
-     +  '/home/graham/gpDigest/gplumi-run5-bigzv.hbook',' ')
+     +  '/home/graham/gpDigest/gplumi-run5-smallzv.hbook',' ')
       elseif(ichoice.eq.4)then
          call hrget(0,
-     +  '/home/graham/gpDigest/gplumi-run5-smallzv.hbook',' ')
+     +  '/home/graham/gpDigest/gplumi-run5-bigzv.hbook',' ')
       elseif(ichoice.eq.5)then
          call hrget(0,
      +  '/home/graham/gpDigest/gplumi-run7.hbook',' ')
@@ -74,10 +77,10 @@
      +  '/home/graham/gpDigest/gplumi-run7-pluszv.hbook',' ')
       elseif(ichoice.eq.8)then
          call hrget(0,
-     +  '/home/graham/gpDigest/gplumi-run7-bigzv.hbook',' ')
+     +  '/home/graham/gpDigest/gplumi-run7-smallzv.hbook',' ')
       elseif(ichoice.eq.9)then
          call hrget(0,
-     +  '/home/graham/gpDigest/gplumi-run7-smallzv.hbook',' ')     
+     +  '/home/graham/gpDigest/gplumi-run7-bigzv.hbook',' ')     
       else
          print *,'Looks like input dataset is not found!'
       endif
@@ -90,35 +93,47 @@
       print *,'Number of data events being fitted ',ntotdata
       
 * Next read the pre-generated MC events and store relevant info
+      print *,'MC array size is: ',nmcarray
       if(jchoice.eq.0)then
-         open(unit=22,file="10m/testbc-1-0.dat",status='old')
+         open(unit=lun,file="10m/testbc-1-0.dat",status='old')
       elseif(jchoice.eq.1)then
-         open(unit=22,file="10m/testbc-1-1.dat",status='old')            
+         open(unit=lun,file="10m/testbc-1-1.dat",status='old')
+      elseif(jchoice.eq.2)then
+         open(unit=lun,file="1m/testbc-1-1.dat",status='old')         
       endif
-      call readheader(22)
-      n=0
+      call readheader(lun,ntoread)
+      if(ntoread.gt.nmcarray)then
+         print *,'MC array not big enough ',nmcarray
+         stop
+      endif
+      nmc=0
    10 continue
-      read(22,*,end=999)iev,rtype,x1,x2,y1,y2,z1,z2,
+      read(lun,*,end=999)iev,rtype,x1,x2,y1,y2,z1,z2,
      +                   weight,weightp,rwt,ibin1,ibin2,icomb
 *      print *,'iev,ibin1,ibin2 ',iev,ibin1,ibin2
-      n = n+1
+      nmc = nmc+1
 * Store info
-      iv(1,n) = ibin1
-      iv(2,n) = ibin2
-      iv(3,n) = rtype
-      iv(4,n) = icomb
-      v(1,n) = x1
-      v(2,n) = y1
-      v(3,n) = z1
-      v(4,n) = x2
-      v(5,n) = y2
-      v(6,n) = z2
-      v(7,n) = weight
+      iv(1,nmc) = ibin1
+      iv(2,nmc) = ibin2
+      iv(3,nmc) = rtype
+      iv(4,nmc) = icomb
+      v(1,nmc) = x1
+      v(2,nmc) = y1
+      v(3,nmc) = z1
+      v(4,nmc) = x2
+      v(5,nmc) = y2
+      v(6,nmc) = z2
+      v(7,nmc) = weight
       goto 10
   999 continue
-      close(22)
+      close(lun)
       
-      print *,'Number of events read ',n  
+      print *,'Number of MC events read ',nmc
+      if(nmc.ne.ntoread)then
+         print *,'Mis-match in events read!'
+      else
+         print *,'Expected number of MC events has been read'
+      endif
 
       open(unit=8,file='reweightlfit.dat',status='old')
 
@@ -128,10 +143,11 @@
 
       end
 
-      subroutine readheader(lun)
+      subroutine readheader(lun,ntoread)
       implicit none
       integer lun
       integer nheader,version,nparameters,nevs,seedm,seedl
+      integer ntoread
       double precision mu1,mu2,s1,s2,pnorm1,pnorm2,alphab,betab
       double precision alphaa,betaa
       
@@ -151,6 +167,9 @@
       read(lun,*)betab
       read(lun,*)alphaa
       read(lun,*)betaa
+      
+      ntoread = nevs
+      print *,'Number of MC reweighting events being read = ',ntoread
       
       end
       
