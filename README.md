@@ -19,3 +19,8 @@ Uses CIRCE1 F77 implementation of the beta distribution (2 parameters), but
 partitions into peak-body-arms regions (2 parameters - named pnorm) similar 
 to Andre Sailer's CoPa approach. The beta distribution parameters differ 
 in the body and arms regions. Total of 6 beamstrahlung related parameters.
+
+## Develop reweighting style fits  
+1. reweightfit.f  
+2. rwbinl.f  
+3. rwbing.f  
