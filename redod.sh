@@ -21,7 +21,7 @@ rm seeds.f
 ln -s seeds${SEEDS}.f seeds.f
 
 # recompile picking up the defined random number seeds and parameters
-./cl.sh
+./cl.sh testbc
 
 # execute
 time ./testbc

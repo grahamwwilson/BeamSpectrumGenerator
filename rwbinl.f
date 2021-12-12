@@ -22,7 +22,11 @@
 
 * Toggle this to fit different data-sets
       integer ichoice
-      parameter (ichoice = 4)
+      parameter (ichoice = 0)
+      
+* Toggle this to use different reweighting MC data-sets
+      integer jchoice
+      parameter (jchoice = 0)
 
       integer n
       integer iev,rtype,ibin1,ibin2,icomb
@@ -39,6 +43,7 @@
 * and store in expt common block (see exptdefn.f include file) for use in fcn
 
       print *,'ichoice set to ',ichoice
+      print *,'jchoice set to ',jchoice
 
       if(ichoice.eq.-999)then
          call hrget(0,
@@ -58,6 +63,21 @@
       elseif(ichoice.eq.4)then
          call hrget(0,
      +  '/home/graham/gpDigest/gplumi-run5-smallzv.hbook',' ')
+      elseif(ichoice.eq.5)then
+         call hrget(0,
+     +  '/home/graham/gpDigest/gplumi-run7.hbook',' ')
+      elseif(ichoice.eq.6)then
+         call hrget(0,
+     +  '/home/graham/gpDigest/gplumi-run7-minuszv.hbook',' ')
+      elseif(ichoice.eq.7)then
+         call hrget(0,
+     +  '/home/graham/gpDigest/gplumi-run7-pluszv.hbook',' ')
+      elseif(ichoice.eq.8)then
+         call hrget(0,
+     +  '/home/graham/gpDigest/gplumi-run7-bigzv.hbook',' ')
+      elseif(ichoice.eq.9)then
+         call hrget(0,
+     +  '/home/graham/gpDigest/gplumi-run7-smallzv.hbook',' ')     
       else
          print *,'Looks like input dataset is not found!'
       endif
@@ -70,7 +90,11 @@
       print *,'Number of data events being fitted ',ntotdata
       
 * Next read the pre-generated MC events and store relevant info
-      open(unit=22,file="10m/testbc-1-1.dat",status='old')
+      if(jchoice.eq.0)then
+         open(unit=22,file="10m/testbc-1-0.dat",status='old')
+      elseif(jchoice.eq.1)then
+         open(unit=22,file="10m/testbc-1-1.dat",status='old')            
+      endif
       call readheader(22)
       n=0
    10 continue
