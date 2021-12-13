@@ -1,14 +1,15 @@
-      program testbc
+      program testbcg
 * V1. test
 * V2. testb.  Add BES.
 * V3. testbc. Separate into peak, arm, and body with specified probabilities.
 * V4. testbc. Add separate slope parameters for arm and body.
 * V5. testbc  Add output file with header portion.
+* V6. testbcg Add Gaussian reweighting too.
       implicit none
       double precision x1,x2
       external rng
       integer nevs
-      parameter (nevs=10000000)
+      parameter (nevs=1000000)
       integer nheader
       parameter (nheader=16)
       integer version
@@ -27,12 +28,15 @@
       double precision z1,z2
       double precision y1,y2
       
-* Gaussian parameters
-      double precision mu1,mu2
-      parameter (mu1=1.0d0, mu2=1.0d0)
-      double precision s1,s2
-      parameter (s1=0.190d-2, s2=0.152d-2)
-            
+      include 'gauss1.f'
+      
+* Gaussian parameters (for reweighting)
+      double precision mu1p,mu2p
+      parameter (mu1p=1.0005d0, mu2p=0.9995d0)
+      double precision s1p,s2p
+      parameter (s1p=0.150d-2, s2p=0.190d-2)
+      double precision g1p,g2p,wgp
+                  
       double precision bnormbody,bnormarms
       double precision pnorm(2)
       
@@ -65,11 +69,18 @@
 
 *     Beamstrahlung parameters from include file
       include 'betapars.f'
-      include 'betaalt.f'
+      include 'betaalt2.f'
 
       print *,'Beam energy spread (BES) parameters'
+      print *,'mu1 (electron) = ',mu1
+      print *,'mu2 (positron) = ',mu2     
       print *,'s1 (electron) = ',s1
       print *,'s2 (positron) = ',s2
+      
+      print *,'mu1p (electron) = ',mu1p
+      print *,'mu2p (positron) = ',mu2p     
+      print *,'s1p (electron) = ',s1p
+      print *,'s2p (positron) = ',s2p      
       
       print *,'Partitioning of events'
       print *,'p(peak) = ',pnorm(1)
@@ -146,6 +157,14 @@
 * Scaled beam energy after uncorrelated Gaussian BES
          z1 = mu1 + s1*rg1
          z2 = mu2 + s2*rg2
+         
+* Calculate Gaussian part of the weight parameters
+         g1 = (z1 - mu1)/s1
+         g2 = (z2 - mu2)/s2         
+         g1p = (z1 - mu1p)/s1p
+         g2p = (z2 - mu2p)/s2p
+         wg = dexp(-0.5d0*(g1**2 + g2**2))/(s1*s2)
+         wgp = dexp(-0.5d0*(g1p**2 + g2p**2))/(s1p*s2p)         
       
 * Beamstrahlung part      
          call rng(u)
@@ -217,10 +236,13 @@
             flag = flag + 2
          endif                     
          
+* Include Gaussian factor in rwt (but not in weight) as this is 
+* easy to recalculate         
+         
          if(flag.eq.0)then
-            rwt = weightp/weight
+            rwt = (weightp/weight)*(wgp/wg)
          else
-            rwt = pregionp/pregion
+            rwt = (pregionp/pregion)*(wgp/wg)
             print *,'Setting rwt to ',rwt,             
      +              ' in event ',iev,' region ',rtype,' and fixing wts'     
             weightp = pregionp
@@ -280,7 +302,7 @@
          call unroll(109,110)
          call unroll(1109,1110)      
 *         call histdo
-         call hrput(0,'testbc.hbook','NT')
+         call hrput(0,'testbcg.hbook','NT')
          call hprint(107)
          call hprint(1107)
       endif
@@ -294,8 +316,8 @@
       
       call hidopt(0,'stat')
       
-      call hbook1(101,'x1 ',1101,-0.0005,1.1005,0.0)
-      call hbook1(102,'x2 ',1101,-0.0005,1.1005,0.0)
+      call hbook1(101,'x1 ',11010,-0.0005,1.1005,0.0)
+      call hbook1(102,'x2 ',11010,-0.0005,1.1005,0.0)
       call hbook1(103,'sqrt(x1*x2)',1101,-0.0005,1.1005,0.0)      
       call hbook1(104,'|x1-x2|',1100,0.000,1.100,0.0)
       call hbook1(105,'Type ',4,0.5,4.5,0.0)
@@ -316,8 +338,8 @@
       
 * Weighted distributions
       call hbook1(1001,'reweight',1000,0.0,10.0,0.0)
-      call hbook1(1101,'x1 ',1101,-0.0005,1.1005,0.0)
-      call hbook1(1102,'x2 ',1101,-0.0005,1.1005,0.0)
+      call hbook1(1101,'x1 ',11010,-0.0005,1.1005,0.0)
+      call hbook1(1102,'x2 ',11010,-0.0005,1.1005,0.0)
       call hbook1(1103,'sqrt(x1*x2)',1101,-0.0005,1.1005,0.0)      
       call hbook1(1104,'|x1-x2|',1100,0.000,1.100,0.0)
       call hbook1(1105,'Type ',4,0.5,4.5,0.0)

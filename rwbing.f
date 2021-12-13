@@ -2,7 +2,7 @@
 *      
 * Plan
 *
-* 1. Read in unweighted using histogram
+* 1. Read in unweighted data using histogram
 *
 * 2. Fit to the unweighted data based on reweighting MC events 
 *    from model generated with model P1.
@@ -12,7 +12,6 @@
 *
 * Graham W. Wilson,     December 9th, 2021
 *
-
       integer nwpawc
       parameter (nwpawc=1000000)
       real hmemor
@@ -52,6 +51,9 @@
       if(ichoice.eq.-999)then
          call hrget(0,
      +  '/home/graham/BeamSpectrumGenerator/1m/testbc-2-2.hbook',' ')
+      elseif(ichoice.eq.-998)then
+         call hrget(0,
+     +  '/home/graham/BeamSpectrumGenerator/1m/testbcg-1-3.hbook',' ')     
       elseif(ichoice.eq.0)then
          call hrget(0,
      +  '/home/graham/gpDigest/gplumi-run5.hbook',' ')
@@ -136,7 +138,8 @@
          print *,'Expected number of MC events has been read'
       endif
 
-      open(unit=8,file='reweightgfit.dat',status='old')
+*      open(unit=8,file='reweightgfit.dat',status='old')
+      open(unit=8,file='rwfitgp.dat',status='old')      
 
       call mintio(8,6,7)
   
@@ -181,6 +184,8 @@
       double precision grad,x,fval
       dimension grad(*),x(*)
       double precision ppeak,pbody,alphab,betab,alphaa,betaa
+* Alternative beta parametrization      
+      double precision meanb,rmsb,meana,rmsa
       double precision mu1,mu2,s1,s2
 * Generated Gaussian parameters      
       double precision mu1g,mu2g,s1g,s2g
@@ -209,22 +214,36 @@
       double precision g1,g1gen,g2,g2gen
       integer nbig
       integer myflag
+      integer parkind
+      parameter (parkind = 2)
 
 * Copy fit parameters into more amenable variables
       ppeak = x(1)
       pbody = x(2)
-      alphab = x(3)
-      betab = x(4)
-      alphaa = x(5)
-      betaa = x(6)
+      if(parkind.eq.1)then
+* alpha, beta based parametrization      
+         alphab = x(3)
+         betab = x(4)
+         alphaa = x(5)
+         betaa = x(6)
+         call cpbeta(bbody,alphab,betab,normb)
+         call cpbeta(barms,alphaa,betaa,norma)
+      else
+* More physical one using mean and rms quantities
+         meanb = x(3)
+         rmsb  = x(4)
+         meana = x(5)
+         rmsa  = x(6)
+         call cpbetap(bbody,meanb,rmsb,normb)
+         call cpbetap(barms,meana,rmsa,norma)         
+      endif   
 * Also the Gaussian parameters      
       mu1 = x(7)
       s1 = x(8)
       mu2 = x(9)
       s2 = x(10)
+      
       parm = 0.5d0*(1.0d0-ppeak-pbody)
-      call cpbeta(bbody,alphab,betab,normb)
-      call cpbeta(barms,alphaa,betaa,norma)
 
       fval = 0.0d0
       do j=1,nbins
@@ -347,4 +366,5 @@
       end
       
       include 'cpbeta.f'
+      include 'cpbetap.f'
       
