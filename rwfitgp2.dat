@@ -1,0 +1,20 @@
+SET TITLE
+Beamstrahlung fit
+PARAMETERS
+1 'ppeak'             0.25    0.01    0.0    0.5
+2 'pbody'             0.25    0.01    0.0    0.5
+3 'meanb'           0.0237   0.001    0.005  0.2
+4 'rmsb'             0.040   0.001    0.01   0.2
+5 'meana'           0.0179   0.001    0.005  0.2
+6 'rmsa'             0.031   0.001    0.01   0.2
+7 'dmu1'             0.1d0    0.01   -20.0  20.0
+8 's1'           0.00192d0  0.0001   0.001  0.003
+9 'dmu2'            -0.1d0    0.01   -20.0  20.0
+10 's2'          0.00146d0  0.0001   0.001  0.003
+
+SET PRINTOUT 1
+SET ERRORDEF 1.0
+MINIMIZE
+C MINOS
+C SCAN
+RETURN

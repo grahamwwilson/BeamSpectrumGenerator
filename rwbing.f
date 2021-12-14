@@ -139,7 +139,8 @@
       endif
 
 *      open(unit=8,file='reweightgfit.dat',status='old')
-      open(unit=8,file='rwfitgp.dat',status='old')      
+*      open(unit=8,file='rwfitgp.dat',status='old')
+      open(unit=8,file='rwfitgp2.dat',status='old')           
 
       call mintio(8,6,7)
   
@@ -237,10 +238,13 @@
          call cpbetap(bbody,meanb,rmsb,normb)
          call cpbetap(barms,meana,rmsa,norma)         
       endif   
-* Also the Gaussian parameters      
-      mu1 = x(7)
+* Also the Gaussian parameters
+* Note the fit parameters for the mus
+* are now deviations from 1.0 in parts per 1000 to make reading MINUIT 
+* info easier. So x(7) = 0.01 means 1 + 1.0e-5 = 1.000010.
+      mu1 = 1.0d0 + 1.0d-3*x(7)
       s1 = x(8)
-      mu2 = x(9)
+      mu2 = 1.0d0 + 1.0d-3*x(9)
       s2 = x(10)
       
       parm = 0.5d0*(1.0d0-ppeak-pbody)
