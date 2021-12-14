@@ -2,7 +2,7 @@
 
 I=$1
 J=$2
-VERSION=1
+VERSION=2
 
 echo 'ichoice (data data-set)  = '$I
 echo 'jchoice (RW MC data-set) = '$J
