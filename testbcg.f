@@ -28,7 +28,7 @@
       double precision z1,z2
       double precision y1,y2
       
-      include 'gauss1.f'
+      include 'gauss2.f'
       
 * Gaussian parameters (for reweighting)
       double precision mu1p,mu2p

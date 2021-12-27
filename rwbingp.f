@@ -1,4 +1,4 @@
-      program rwbing
+      program rwbingp
 *      
 * Plan
 *
@@ -140,9 +140,9 @@
 
 *      open(unit=8,file='reweightgfit.dat',status='old')
 *      open(unit=8,file='rwfitgp.dat',status='old')
-*      open(unit=8,file='rwfitgp3.dat',status='old')
+      open(unit=8,file='rwfitgp3.dat',status='old')
 * Use 15-parameter fit to ichoice=2 data-set to try to fit ichoice=7
-      open(unit=8,file='rwfitgp3a.dat',status='old')               
+*      open(unit=8,file='rwfitgp3a.dat',status='old')               
 
       call mintio(8,6,7)
   
