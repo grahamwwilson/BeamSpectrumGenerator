@@ -4,7 +4,7 @@ VERSION=$1
 
 SEEDS=$2
 
-OUTDIR=${3:-1m}
+OUTDIR=${3:-10m}
 
 mcfile=/home/graham/BeamSpectrumGenerator/${OUTDIR}/testbcg-${VERSION}-${SEEDS}.dat
 
@@ -19,7 +19,10 @@ else
    ln -s ${mcfile} mcfile.ini
 fi
 
-# execute precompiled code
+# Compile code
+gfortran -o dumpmc dumpmc.f
+
+# Execute code
 time ./dumpmc
 
 # Rename shorter output file

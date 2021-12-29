@@ -4,13 +4,11 @@ VERSION=$1
 
 SEEDS=$2
 
-OUTDIR=${3:-1m}
+OUTDIR=${3:-10m}
 
 echo 'VERSION: '${VERSION}
 echo 'SEEDS:   '${SEEDS}
 echo 'OUTDIR:  '${OUTDIR}
-
-rm testbcg.hbook
 
 # link input beamstrahlung parameters file
 rm betapars.f
@@ -28,7 +26,7 @@ time ./testbcg
 
 # Rename output file
 mv fort.45 testbcg-${VERSION}-${SEEDS}.dat
-cp testbcg.hbook testbcg-${VERSION}-${SEEDS}.hbook
+mv testbcg.hbook testbcg-${VERSION}-${SEEDS}.hbook
 
 mv testbcg-${VERSION}-${SEEDS}.dat $OUTDIR
 mv testbcg-${VERSION}-${SEEDS}.hbook $OUTDIR

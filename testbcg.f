@@ -9,7 +9,7 @@
       double precision x1,x2
       external rng
       integer nevs
-      parameter (nevs=1000000)
+      parameter (nevs=10000000)
       integer nheader
       parameter (nheader=16)
       integer version
