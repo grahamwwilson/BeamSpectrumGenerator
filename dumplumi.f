@@ -12,7 +12,7 @@
       integer N
       include 'arraysize.inc'
       integer npar
-      parameter (npar=2)
+      parameter (npar=4)
       double precision X(npar,N)
       double precision xm(npar),xr(npar)
       double precision xmean,xrms
@@ -60,6 +60,10 @@
          nevents = nevents + 1           
          x(1,i) = x1/ebeam
          x(2,i) = x2/ebeam
+* Also ECM scaled to nominal         
+         x(3,i) = sqrt(x(1,i)*x(2,i))
+* And Ediff scaled to Ebeam:  (E1-E2)/Ebeam
+         x(4,i) = x(1,i)-x(2,i)
       enddo
       
       close(lun)
@@ -73,14 +77,19 @@
         xm(j) = xmean
         xr(j) = xrms
         if(j.le.2)then
-*           print *,'Mean energy loss relative to ',Ebeam,' of ',
+*           print *,'Mean % energy loss relative to ',Ebeam,' of ',
 *     +              (Ebeam-xm(j))/Ebeam
-           print *,'Mean energy loss relative to ',Ebeam,' of ',
+           print *,'Mean % energy loss relative to ',Ebeam,' of ',
      +              (1.0d0-xm(j))
+        elseif(j.eq.3)then
+           print *,'Mean % energy loss relative to ',2.0*Ebeam,' of ',
+     +              (1.0d0-xm(j))        
         endif
       enddo
+      
+      print *,' ' 
 
-      do i1=1,1
+      do i1=1,npar-1
          do i2=i1+1,npar
             call correlations(nevents,x,i1,i2,xm,xr)
          enddo
@@ -102,7 +111,7 @@
       include 'arraysize.inc'
 
       integer npar
-      parameter (npar=2)            
+      parameter (npar=4)            
       double precision X(npar,N)
       
       integer i,j,nevents
@@ -111,7 +120,9 @@
       double precision xmean,xrms
       character*9 cvalues(npar)
       data cvalues/'E1/Eb    ',
-     +             'E2/Eb    '/
+     +             'E2/Eb    ',
+     +             'ECM/2Eb  ',
+     +             'x1-x2    '/
        
       print *,' '    
       print *,'Statistics for ',cvalues(j)
@@ -138,7 +149,7 @@
 * Extrema values (both absolute and in normalized deviations)
       print *,'xmin     ',xmin,'    ',(xmin-xsum)/sx
       print *,'xmax     ',xmax,'    ',(xmax-xsum)/sx
-      if(j.le.2.or.j.eq.6)then
+      if(j.le.3)then
          print *,'Rms/Mean ',sx/xsum
       endif
       
@@ -154,7 +165,7 @@
       include 'arraysize.inc'
       
       integer npar
-      parameter (npar=2)            
+      parameter (npar=4)            
       double precision X(npar,N)      
       
       double precision xm(2),xr(2)
@@ -163,8 +174,9 @@
       
       character*9 cvalues(npar)
       data cvalues/'E1/Eb    ',
-     +             'E2/Eb    '/     
-      print *,' '
+     +             'E2/Eb    ',
+     +             'ECM/2Eb  ',
+     +             'x1-x2    '/
       
       xysum = 0.0d0
       

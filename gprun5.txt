@@ -1,0 +1,43 @@
+Using lumifile /home/graham/gpDigest/lumi-Run5.ee.out
+ Array size pre-dimensioned to N =     10000000
+ Trying to read       171349  events
+ Array size is sufficient for requested event count
+ This will WORK!
+ nevents analyzed       171349
+  
+ Statistics for E1/Eb    
+ Mean       0.98913904932393037     
+ Rms         2.7734364669304113E-002
+ xmin       0.50413909599999995            -17.487328774497563     
+ xmax        1.0056895120000000            0.59674929905235519     
+ Rms/Mean    2.8038893710909864E-002
+ Mean % energy loss relative to    125.00000000000000       of    1.0860950676069625E-002
+  
+ Statistics for E2/Eb    
+ Mean       0.98922719138041004     
+ Rms         2.7584333849204043E-002
+ xmin       0.52521880799999998            -16.821446039517070     
+ xmax        1.0045512720000001            0.55553564220048002     
+ Rms/Mean    2.7884730716623025E-002
+ Mean % energy loss relative to    125.00000000000000       of    1.0772808619589958E-002
+  
+ Statistics for ECM/2Eb  
+ Mean       0.98898991225956911     
+ Rms         2.0826909313216679E-002
+ xmin       0.71006053317330908            -13.392739887202202     
+ xmax        1.0047347479802560            0.75598522487900988     
+ Rms/Mean    2.1058768198790760E-002
+ Mean % energy loss relative to    250.00000000000000       of    1.1010087740430885E-002
+  
+ Statistics for x1-x2    
+ Mean       -8.8142056457872391E-005
+ Rms         3.7775181625678438E-002
+ xmin      -0.49595386399999997            -13.126759438436887     
+ xmax       0.44830048000000000             11.869926305044070     
+  
+ Correlation Coefficient for E1/Eb     with E2/Eb     of    6.7399693443821435E-002
+ Correlation Coefficient for E1/Eb     with ECM/2Eb   of   0.73229388333948076     
+ Correlation Coefficient for E1/Eb     with x1-x2     of   0.68497854702533900     
+ Correlation Coefficient for E2/Eb     with ECM/2Eb   of   0.72829620619375490     
+ Correlation Coefficient for E2/Eb     with x1-x2     of  -0.68073918023470292     
+ Correlation Coefficient for ECM/2Eb   with x1-x2     of    5.8276334382791591E-003

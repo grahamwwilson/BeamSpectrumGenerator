@@ -1,0 +1,43 @@
+Using lumifile /home/graham/gpDigest/lumi-Run7.ee.out
+ Array size pre-dimensioned to N =     10000000
+ Trying to read       156231  events
+ Array size is sufficient for requested event count
+ This will WORK!
+ nevents analyzed       156231
+  
+ Statistics for E1/Eb    
+ Mean       0.98910485993246922     
+ Rms         2.7733501127786064E-002
+ xmin       0.55441736000000008            -15.673733292078214     
+ xmax        1.0056810320000000            0.59769489582846880     
+ Rms/Mean    2.8038989849548973E-002
+ Mean % energy loss relative to    125.00000000000000       of    1.0895140067530784E-002
+  
+ Statistics for E2/Eb    
+ Mean       0.98903602082151754     
+ Rms         2.8092503444878240E-002
+ xmin       0.53425451999999996            -16.188713893507853     
+ xmax        1.0045512720000001            0.55229151111170260     
+ Rms/Mean    2.8403923470394860E-002
+ Mean % energy loss relative to    125.00000000000000       of    1.0963979178482464E-002
+  
+ Statistics for ECM/2Eb  
+ Mean       0.98887649873408723     
+ Rms         2.1165175262884455E-002
+ xmin       0.71278121660452454            -13.044790732903932     
+ xmax        1.0046258338751755            0.74411550792619607     
+ Rms/Mean    2.1403254390188368E-002
+ Mean % energy loss relative to    250.00000000000000       of    1.1123501265912772E-002
+  
+ Statistics for x1-x2    
+ Mean        6.8839110957491062E-005
+ Rms         3.7810272880635667E-002
+ xmin      -0.43493133599999989            -11.504814484788881     
+ xmax       0.46197765600000007             12.216489903345996     
+  
+ Correlation Coefficient for E1/Eb     with E2/Eb     of    8.2607191017593687E-002
+ Correlation Coefficient for E1/Eb     with ECM/2Eb   of   0.73110101851338560     
+ Correlation Coefficient for E1/Eb     with x1-x2     of   0.67211517912952867     
+ Correlation Coefficient for E2/Eb     with ECM/2Eb   of   0.73981573418732860     
+ Correlation Coefficient for E2/Eb     with x1-x2     of  -0.68239435619751820     
+ Correlation Coefficient for ECM/2Eb   with x1-x2     of   -1.3416595554001850E-002

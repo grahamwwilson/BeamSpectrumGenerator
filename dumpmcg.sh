@@ -6,7 +6,7 @@ SEEDS=$2
 
 OUTDIR=${3:-1m}
 
-mcfile=/home/graham/BeamSpectrumGenerator/${OUTDIR}/testbcg-${VERSION}-${SEEDS}.dat
+mcfile=/home/graham/BeamSpectrumGenerator/${OUTDIR}/testbc-${VERSION}-${SEEDS}.dat
 
 echo 'Using mcfile '${mcfile}
 
@@ -26,8 +26,8 @@ gfortran -o dumpmc dumpmc.f
 time ./dumpmc
 
 # Rename shorter output file
-mv fort.23 testbcg-${VERSION}-${SEEDS}.cdat
-mv testbcg-${VERSION}-${SEEDS}.cdat $OUTDIR
+mv fort.23 testbc-${VERSION}-${SEEDS}.cdat
+mv testbc-${VERSION}-${SEEDS}.cdat $OUTDIR
 
 # Tidy up
 rm mcfile.ini
